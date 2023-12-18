@@ -38,7 +38,11 @@ app.post("/add", async (req, res) => {
 
 app.post("/edit", (req, res) => {});
 
-app.post("/delete", (req, res) => {});
+app.post("/delete", async (req, res) => {
+  let itemid = req.body.deleteItemId;
+  await db.query(`DELETE FROM items WHERE id = ${itemid} `);
+  res.redirect("/");
+});
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
