@@ -16,10 +16,11 @@ const db = new pg.Client({
 });
 db.connect();
 
-let items = [];
+var items = [];
 async function getItems(){
-  const dbItems = await db.query("SELECT * FROM items");
+  const dbItems = await db.query("SELECT * FROM items ORDER BY id ASC");
   items = dbItems.rows;
+  console.log(items);
 }
 
 app.get("/", async (req, res) => {
@@ -36,7 +37,12 @@ app.post("/add", async (req, res) => {
   res.redirect("/");
 });
 
-app.post("/edit", (req, res) => {});
+app.post("/edit", async (req, res) => {
+  const updatedItemTitle = req.body.updatedItemTitle;
+  const updatedItemId = req.body.updatedItemId;
+  await db.query(`UPDATE items SET title = '${updatedItemTitle}' WHERE id = ${updatedItemId} `);
+  res.redirect("/");
+});
 
 app.post("/delete", async (req, res) => {
   let itemid = req.body.deleteItemId;
